@@ -47,6 +47,8 @@ class StoryList {
    *  - returns the StoryList instance.
    */
 
+
+
   static async getStories() {
     // Note presence of `static` keyword: this indicates that getStories is
     //  **not** an instance method. Rather, it is a method that is called on the
@@ -90,13 +92,13 @@ class User {
    */
 
   constructor({
-                username,
-                name,
-                createdAt,
-                favorites = [],
-                ownStories = []
-              },
-              token) {
+    username,
+    name,
+    createdAt,
+    favorites = [],
+    ownStories = []
+  },
+    token) {
     this.username = username;
     this.name = name;
     this.createdAt = createdAt;
@@ -116,12 +118,18 @@ class User {
    * - name: the user's full name
    */
 
+  //this is a static method, must be called using User.signup(),
+  //called on the class, not on the instance
+
   static async signup(username, password, name) {
+    console.log("signup function-->", username, password, name)
     const response = await axios({
       url: `${BASE_URL}/signup`,
       method: "POST",
       data: { user: { username, password, name } },
     });
+
+
 
     return new User(
       {

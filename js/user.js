@@ -38,7 +38,7 @@ async function signup(evt) {
   const name = $("#signup-name").val();
   const username = $("#signup-username").val();
   const password = $("#signup-password").val();
-
+  console.log('signup evt--->', username, password, name);
   // User.signup retrieves user info from API and returns User instance
   // which we'll make the globally-available, logged-in user.
   currentUser = await User.signup(username, password, name);
@@ -110,7 +110,14 @@ function saveUserCredentialsInLocalStorage() {
 function updateUIOnUserLogin() {
   console.debug("updateUIOnUserLogin");
 
+  //MO --- hide UserLogout compenents
+  hidePageComponents()
+
+  //MO --- unhide components for UserLogin
   $allStoriesList.show();
 
+  //MO --- update this function in nav.js to show 
+  // links to submit favorites my stories
+  // when username is clicked, page updates to user profile
   updateNavOnLogin();
 }
