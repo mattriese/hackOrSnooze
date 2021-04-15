@@ -14,6 +14,18 @@ function navAllStories(evt) {
 
 $body.on("click", "#nav-all", navAllStories);
 
+
+/** Show submit new story form on click of submit nav link */
+
+function showStorySubmitForm(evt) {
+  console.debug("showStorySubmitForm", evt);
+  //putStoriesOnPage();
+  $storyForm.show()
+}
+
+$body.on("click", "#nav-submit", showStorySubmitForm);
+
+
 /** Show login/signup on click on "login" */
 
 function navLoginClick(evt) {
@@ -28,7 +40,7 @@ $navLogin.on("click", navLoginClick);
 
 
 /** When a user first logins in, update the navbar to reflect that. */
-//MO --- update this function in nav.js to show 
+//MO --- update this function in nav.js to show
 // links to submit favorites my stories
 // when username is clicked, page updates to user profile
 
