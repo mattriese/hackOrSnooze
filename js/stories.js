@@ -27,7 +27,7 @@ function generateStoryMarkup(story) {
   let icon = checkForFavorite(story) ? "fa fa-star" : "far fa-star";
   return $(`
       <li id="${story.storyId}">
-      <a href="#"><i class="${icon}"></i></a>
+      <a class="favorite" href="#"><i class="${icon}"></i></a>
         <a href="${story.url}" target="a_blank" class="story-link">
           ${story.title}
         </a>
@@ -37,6 +37,15 @@ function generateStoryMarkup(story) {
       </li>
     `);
 }
+
+
+
+/* click listener for favorite & unfavorite */
+$(".favorite").on("click", function (e) {
+  console.log(e.target)
+});
+
+
 
 // checks to see if a story is in the user's favorites (returns true or false)
 // if user is not logged in, return false
@@ -54,7 +63,7 @@ function checkForFavorite(story) {
     return false;
   }
 }
-
+// OLD CODE
 // const stories = response.data.stories.map(story => {
 //   if(user === null){
 //     return new Story(story);
@@ -65,6 +74,8 @@ function checkForFavorite(story) {
 //     }
 //   return newStory;
 // })
+
+
 
 /** Gets list of stories from server, generates their HTML, and puts on page. */
 
