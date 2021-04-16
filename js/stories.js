@@ -24,10 +24,17 @@ function generateStoryMarkup(story) {
   // console.debug("generateStoryMarkup", story);
 
   const hostName = story.getHostName();
-  let icon = checkForFavorite(story) ? "fa fa-star" : "far fa-star";
+
+  //hides button if no user is logged in
+  let anchorTagClass = "favorite";
+  if(currentUser === undefined){
+    anchorTagClass = "hidden";
+  }
+
+  let icon = checkForFavorite(story) ? "fas fa-star" : "far fa-star";
   return $(`
       <li id="${story.storyId}">
-      <a class="favorite" href="#"><i class="${icon}"></i></a>
+        <a class="${anchorTagClass}" href="#"><i class="${icon}"></i></a>
         <a href="${story.url}" target="a_blank" class="story-link">
           ${story.title}
         </a>
@@ -41,27 +48,43 @@ function generateStoryMarkup(story) {
 
 
 /* click listener for favorite & unfavorite */
-$(".favorite").on("click", function (e) {
-  console.log(e.target)
-});
 
+//$body.on("click", ".fa fa-star", unfavoriteStory);
+//$body.on("click", ".far fa-star", favoriteStory);
+// $(".fa fa-star").on("click", function (e) {
+//   console.log(e.target)
+// });
 
+// callback function to add to click listener to change icon from favorite to not favorite
+function unfavoriteStory(e){
+  console.log("unfavoriteStory");
+  console.log(e.target);
+  let unfavoritedStoryId = $(e.target).closest("li").attr("id");
+  console.log("e.target.closest(li).attr(id)= ", $(e.target).closest("li").attr("id"));
+  currentUser.unfavoriteStory(unfavoritedStoryId);
+  $(e.target).attr("class", "fas fa-star");
+}
+
+// callback function to add to click listener to change icon from not favorite to favorite
+function favoriteStory(e){
+  console.log("favoriteStory");
+  console.log(e.target);
+  let favoritedStoryId = $(e.target).closest("li").attr("id");
+  console.log("e.target.closest(li).attr(id)= ", $(e.target).closest("li").attr("id"));
+  currentUser.favoriteStory(favoritedStoryId);
+  $(e.target).attr("class", "far fa-star");
+}
+//
 
 // checks to see if a story is in the user's favorites (returns true or false)
-// if user is not logged in, return false
 function checkForFavorite(story) {
-  if (currentUser === undefined) {
-    return false;
-  }
-  else {
-    let favoritesIDs = currentUser.favorites.map(story => story.storyId);
+      let favoritesIDs = currentUser.favorites.map(story => story.storyId);
     if (favoritesIDs.includes(story.storyId)) {
       console.log('checkForFavorite', true);
       return true;
     }
     console.log('checkForFavorite', false)
     return false;
-  }
 }
 // OLD CODE
 // const stories = response.data.stories.map(story => {
@@ -88,6 +111,9 @@ function putStoriesOnPage() {
   for (let story of storyList.stories) {
     const $story = generateStoryMarkup(story);
     $allStoriesList.append($story);
+    //story.on("click", )
+    $story.on("click", ".fas.fa-star", unfavoriteStory);
+    $story.on("click", ".far.fa-star", favoriteStory);
   }
 
   $allStoriesList.show();

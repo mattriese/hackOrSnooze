@@ -238,4 +238,32 @@ class User {
       return null;
     }
   }
+
+
+// function to add new story to favorite lists
+async favoriteStory(storyId){
+  console.log("favoriteStory() ran");
+  let token = this.loginToken;
+  let response = await axios({
+    url: `${BASE_URL}/users/${this.username}/favorites/${storyId}`,
+        method: "POST",
+        params: { token }
+})
+  console.log("response.data= ", response.data);
+}
+
+
+// function to remove story from favorite lists
+async unfavoriteStory(storyId){
+  console.log("favoriteStory() ran");
+  let token = this.loginToken;
+  let response = await axios({
+    url: `${BASE_URL}/users/${this.username}/favorites/${storyId}`,
+        method: "DELETE",
+        params: { token }
+})
+  console.log("response.data= ", response.data);
+}
+
+
 }
