@@ -25,7 +25,9 @@ class Story {
 
   getHostName() {
     // UNIMPLEMENTED: complete this function!
-    return "hostname.com";
+    let hostname = new URL(this.url)
+    return hostname.host;
+
   }
 }
 
@@ -75,9 +77,35 @@ class StoryList {
    * Returns the new Story instance
    */
 
-  async addStory( /* user, newStory */) {
+  async addStory(user, newStory) {
+    let response = await axios({
+      url: `${BASE_URL}/stories`, //use the constant
+      method: "POST",
+      data: {
+        token: currentUser.loginToken, //get token from user instance
+        story: {
+          author: newStory.author,
+          title: newStory.title,
+          url: newStory.url
+        }
+      }
+
+    })
+
     // UNIMPLEMENTED: complete this function!
 
+    let { story } = response.data
+
+    return new Story(
+      {
+        storyId: story.storyId,
+        title: story.title,
+        author: story.author,
+        url: story.url,
+        username: story.username,
+        createdAt: story.createdAt
+      }
+    );
   }
 }
 

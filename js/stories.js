@@ -50,3 +50,39 @@ function putStoriesOnPage() {
 
   $allStoriesList.show();
 }
+
+
+/** submitStoryAndAddToPage will put an event listener on the story
+ * form and call .addStory with the values from the form
+ * hide the page components
+ * then call putStoriesOnPage
+*/
+async function submitStoryAndAddToPage(e) {
+  e.preventDefault();
+  console.debug("submitStoryAndAddToPage-->", "submit clicked")
+
+  //get form values and create a newStory obj
+  let title = $('#title').val();
+  let author = $('#author').val();
+  let url = $('#url').val();
+  let newStory = { title, author, url }
+
+  //call addStory to POST request the form values
+  let submittedStory = await storyList.addStory(currentUser, newStory);
+
+  console.log("after submit --->", submittedStory)
+
+  let addedStory = generateStoryMarkup(submittedStory);
+  $allStoriesList.prepend(addedStory);
+
+  // storyList = await StoryList.getStories();
+  // dont reassign story list, add 1 story.
+  //use generateStoryMarkup
+
+  //clear form values
+  $('#title').val("");
+  $('#author').val("");
+  $('#url').val("");
+}
+
+$storyForm.on("submit", submitStoryAndAddToPage)
