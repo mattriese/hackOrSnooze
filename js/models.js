@@ -19,7 +19,6 @@ class Story {
     this.url = url;
     this.username = username;
     this.createdAt = createdAt;
-    this.favorite = false;
   }
 
   /** Parses hostname out of URL and returns it. */
@@ -63,19 +62,20 @@ class StoryList {
       url: `${BASE_URL}/stories`,
       method: "GET",
     });
-//if currentUser === null, just show stories
+    //if currentUser === null, just show stories
     // turn plain old story objects from API into instances of Story class
-    let favoritesIDs = user.favorites.map(story => story.storyId);
-    const stories = response.data.stories.map(story => {
-      if(user === null){
-        return new Story(story);
-      }
-      let newStory = new Story(story);
-      if(favoritesIDs.includes(newStory.storyId)){
-          newStory.favorite = true;
-        }
-      return newStory;
-    })
+    // let favoritesIDs = user.favorites.map(story => story.storyId);
+    // const stories = response.data.stories.map(story => {
+    //   if(user === null){
+    //     return new Story(story);
+    //   }
+    //   let newStory = new Story(story);
+    //   if(favoritesIDs.includes(newStory.storyId)){
+    //       newStory.favorite = true;
+    //     }
+    //   return newStory;
+    // })
+    const stories = response.data.stories.map(story => new Story(story))
     // build an instance of our own class using the new array of stories
     return new StoryList(stories);
   }
