@@ -29,6 +29,7 @@ async function login(evt) {
 
 $loginForm.on("submit", login);
 
+
 /** Handle signup form submission. */
 
 async function signup(evt) {
@@ -50,6 +51,7 @@ async function signup(evt) {
 }
 
 $signupForm.on("submit", signup);
+
 
 /** Handle click of logout button
  *
@@ -116,7 +118,7 @@ function updateUIOnUserLogin() {
   //MO --- unhide components for UserLogin
   $allStoriesList.show();
 
-  //MO --- update this function in nav.js to show 
+  //MO --- update this function in nav.js to show
   // links to submit favorites my stories
   // when username is clicked, page updates to user profile
   updateNavOnLogin();

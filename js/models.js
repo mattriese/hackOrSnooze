@@ -19,6 +19,7 @@ class Story {
     this.url = url;
     this.username = username;
     this.createdAt = createdAt;
+    this.favorite = false;
   }
 
   /** Parses hostname out of URL and returns it. */
@@ -51,7 +52,7 @@ class StoryList {
 
 
 
-  static async getStories() {
+  static async getStories(user) {
     // Note presence of `static` keyword: this indicates that getStories is
     //  **not** an instance method. Rather, it is a method that is called on the
     //  class directly. Why doesn't it make sense for getStories to be an
@@ -62,10 +63,19 @@ class StoryList {
       url: `${BASE_URL}/stories`,
       method: "GET",
     });
-
+//if currentUser === null, just show stories
     // turn plain old story objects from API into instances of Story class
-    const stories = response.data.stories.map(story => new Story(story));
-
+    let favoritesIDs = user.favorites.map(story => story.storyId);
+    const stories = response.data.stories.map(story => {
+      if(user === null){
+        return new Story(story);
+      }
+      let newStory = new Story(story);
+      if(favoritesIDs.includes(newStory.storyId)){
+          newStory.favorite = true;
+        }
+      return newStory;
+    })
     // build an instance of our own class using the new array of stories
     return new StoryList(stories);
   }
@@ -82,7 +92,7 @@ class StoryList {
       url: `${BASE_URL}/stories`, //use the constant
       method: "POST",
       data: {
-        token: currentUser.loginToken, //get token from user instance
+        token: user.loginToken, //get token from user instance
         story: {
           author: newStory.author,
           title: newStory.title,
