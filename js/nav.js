@@ -19,12 +19,19 @@ $body.on("click", "#nav-all", navAllStories);
 
 function showStorySubmitForm(evt) {
   console.debug("showStorySubmitForm", evt);
-  //putStoriesOnPage();
-  $storyForm.show()
+  $storyForm.show();
 }
 
 $body.on("click", "#nav-submit", showStorySubmitForm);
 
+/** Show favorite stories list */
+function showFavoriteStories(evt) {
+  console.debug("showFavoriteStories", evt);
+  hidePageComponents();
+  generateFavoriteStoriesList();
+}
+
+$body.on("click", "#nav-favorites", showFavoriteStories);
 
 /** Show login/signup on click on "login" */
 

@@ -27,14 +27,16 @@ function generateStoryMarkup(story) {
 
   //hides button if no user is logged in
   let anchorTagClass = "favorite";
-  if(currentUser === undefined){
+  if (currentUser === undefined) {
     anchorTagClass = "hidden";
   }
 
-  let icon = checkForFavorite(story) ? "fas fa-star" : "far fa-star";
+  let favoriteCSSClass = checkForFavorite(story) ? "fas" : "far";
+
+
   return $(`
       <li id="${story.storyId}">
-        <a class="${anchorTagClass}" href="#"><i class="${icon}"></i></a>
+        <a class="${anchorTagClass}" href="#"><i class="${favoriteCSSClass} fa-star"></i></a>
         <a href="${story.url}" target="a_blank" class="story-link">
           ${story.title}
         </a>
@@ -45,58 +47,42 @@ function generateStoryMarkup(story) {
     `);
 }
 
-
-
-/* click listener for favorite & unfavorite */
-
-//$body.on("click", ".fa fa-star", unfavoriteStory);
-//$body.on("click", ".far fa-star", favoriteStory);
-// $(".fa fa-star").on("click", function (e) {
-//   console.log(e.target)
-// });
+//TODO
+//remove duplication here
+// let favoritedStoryId = $(e.target).closest("li").attr("id");
+//   let story = storyList.stories.find((story) => story.storyId === favoritedStoryId);
 
 // callback function to add to click listener to change icon from favorite to not favorite
-function unfavoriteStory(e){
+async function unfavoriteStory(e) {
   console.log("unfavoriteStory");
-  console.log(e.target);
   let unfavoritedStoryId = $(e.target).closest("li").attr("id");
-  console.log("e.target.closest(li).attr(id)= ", $(e.target).closest("li").attr("id"));
-  currentUser.unfavoriteStory(unfavoritedStoryId);
-  $(e.target).attr("class", "fas fa-star");
+  let story = storyList.stories.find((story) => story.storyId === unfavoritedStoryId);
+  await currentUser.unfavoriteStory(story);
+  $(e.target).removeClass("fas");
+  $(e.target).addClass("far");
 }
 
 // callback function to add to click listener to change icon from not favorite to favorite
-function favoriteStory(e){
+async function favoriteStory(e) {
   console.log("favoriteStory");
-  console.log(e.target);
   let favoritedStoryId = $(e.target).closest("li").attr("id");
-  console.log("e.target.closest(li).attr(id)= ", $(e.target).closest("li").attr("id"));
-  currentUser.favoriteStory(favoritedStoryId);
-  $(e.target).attr("class", "far fa-star");
+  let story = storyList.stories.find((story) => story.storyId === favoritedStoryId);
+  await currentUser.favoriteStory(story);
+  $(e.target).removeClass("far");
+  $(e.target).addClass("fas");
 }
 //
 
 // checks to see if a story is in the user's favorites (returns true or false)
 function checkForFavorite(story) {
-      let favoritesIDs = currentUser.favorites.map(story => story.storyId);
-    if (favoritesIDs.includes(story.storyId)) {
-      console.log('checkForFavorite', true);
-      return true;
-    }
-    console.log('checkForFavorite', false)
-    return false;
+  let favoritesIDs = currentUser.favorites.map(story => story.storyId);
+  if (favoritesIDs.includes(story.storyId)) {
+    console.log('checkForFavorite', true);
+    return true;
+  }
+  console.log('checkForFavorite', false)
+  return false;
 }
-// OLD CODE
-// const stories = response.data.stories.map(story => {
-//   if(user === null){
-//     return new Story(story);
-//   }
-//   let newStory = new Story(story);
-//   if(favoritesIDs.includes(newStory.storyId)){
-//       newStory.favorite = true;
-//     }
-//   return newStory;
-// })
 
 
 
@@ -111,9 +97,6 @@ function putStoriesOnPage() {
   for (let story of storyList.stories) {
     const $story = generateStoryMarkup(story);
     $allStoriesList.append($story);
-    //story.on("click", )
-    $story.on("click", ".fas.fa-star", unfavoriteStory);
-    $story.on("click", ".far.fa-star", favoriteStory);
   }
 
   $allStoriesList.show();
@@ -143,6 +126,7 @@ async function submitStoryAndAddToPage(e) {
   let addedStory = generateStoryMarkup(submittedStory);
   $allStoriesList.prepend(addedStory);
 
+
   // storyList = await StoryList.getStories();
   // dont reassign story list, add 1 story.
   //use generateStoryMarkup
@@ -154,3 +138,17 @@ async function submitStoryAndAddToPage(e) {
 }
 
 $storyForm.on("submit", submitStoryAndAddToPage)
+
+//click listener for favorites icons to favorite and unfavorite story
+$body.on("click", ".fas.fa-star", unfavoriteStory);
+$body.on("click", ".far.fa-star", favoriteStory);
+
+
+/*called on click to generate a list of faves from user's favorites*/
+function generateFavoriteStoriesList() {
+  $favoriteStoriesList.show();
+  for (let story of currentUser.favorites) {
+    let addedStory = generateStoryMarkup(story);
+    $favoriteStoriesList.append(addedStory);
+  }
+}
